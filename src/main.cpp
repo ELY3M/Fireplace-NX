@@ -74,9 +74,23 @@ int main()
 
 	while(appletMainLoop())
 	{
-			hidScanInput();
-			u32 kDownAbb = hidKeysDown(CONTROLLER_P1_AUTO);
-			if (kDownAbb & KEY_PLUS){ break; }
+			//hidScanInput();
+			//u32 kDownAbb = hidKeysDown(CONTROLLER_P1_AUTO);
+			//if (kDownAbb & KEY_PLUS){ break; }
+
+			padConfigureInput(1, HidNpadStyleSet_NpadStandard);
+			PadState pad;
+			padInitializeDefault(&pad);
+			
+			//Scan all the inputs. This should be done once for each frame
+			padUpdate(&pad);
+			u64 kDown = padGetButtonsDown(&pad);
+
+			if (kDown & HidNpadButton_Plus)  { 
+			//exit to hbmenu
+			break; 
+			}
+		
 			
 			for (i = WIDTH + 1; i < (HEIGHT - 1) * WIDTH - 1; i++) {
 					/* Average the eight neighbours. */
