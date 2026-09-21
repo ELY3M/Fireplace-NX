@@ -1,16 +1,22 @@
-name: Build
+name: Build Nro
 
 on:
   push:
+    branches: [ "*" ]
   pull_request:
+    branches: [ "*" ]
+  workflow_dispatch:
+  workflow_call:
+
+permissions: write-all
 
 jobs:
   build:
-    name: Test build
+    name: Build
     runs-on: ubuntu-latest
     container:
-      ##image: 'devkitpro/devkita64'
-      image: 'ghcr.io/ely3m/devkita64'
+      image: 'devkitpro/devkita64'
+      ##image: 'ghcr.io/irneracoonovich/devkita64'
 
     steps:
       - uses: actions/checkout@v4
@@ -18,7 +24,7 @@ jobs:
           persist-credentials: false
 
       - name: build
-        run: make -j2
+        run: make -j$(nproc)
 
       - name: test
         run: ls -la
@@ -30,5 +36,5 @@ jobs:
           prerelease: false
           draft: false
           body: ${{ github.event.head_commit.message }}
-          files: Fireplace-NX.nro
+          files: ${{ github.event.repository.name }}.nro
           name: "Switch Release #${{ github.run_number }}"
